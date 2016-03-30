@@ -1,4 +1,4 @@
-# Hat-Compatible CSPRNG
+# `hat`-Compatible CSPRNG
 
 [![Build Status](https://travis-ci.org/heap/cryptohat.svg?branch=master)](https://travis-ci.org/heap/cryptohat)
 [![Coverage Status](https://coveralls.io/repos/github/heap/cryptohat/badge.svg?branch=master)](https://coveralls.io/github/heap/cryptohat?branch=master)
@@ -9,11 +9,11 @@ This is a [node.js](https://nodejs.org/) package that implements
 [hat](https://www.npmjs.com/package/hat)'s main API, but uses a
 [cryptographically secure pseudo-random number generator](https://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator)
 to generate the random identifiers. This is especially beneficial when using
-older versions of [V8](https://en.wikipedia.org/wiki/V8_(JavaScript_engine)
+older versions of [V8](https://en.wikipedia.org/wiki/V8_(JavaScript_engine))
 that exhibit [this bug](https://bugs.chromium.org/p/v8/issues/detail?id=4566).
 
 In our use cases, `cryptohat` takes up to 3x more time to produce a random
-identifier than `hat`. `cryptohat` also exposes an alternative API that
+string than `hat`. However, `cryptohat` also exposes an alternative API that
 produces random *numbers* up to 2x faster than `hat`, while still using a
 CSPRNG.
 
