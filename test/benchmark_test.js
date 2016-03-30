@@ -50,7 +50,7 @@ describe("benchmarking", function() {
       console.log([baseline / us, "baseline", baseline, "us", us]);
       expect(baseline / us).to.be.at.least(0.33);
     });
-    it("is most 5x slower than hat for base-36 63-bits", function() {
+    it("is at most 5x slower than hat for base-36 63-bits", function() {
       var baseline = benchmark(iterations, function() { return hat(63, 36); });
       var us = benchmark(iterations, cryptohat.generator(63, 36));
       console.log([baseline / us, "baseline", baseline, "us", us]);
