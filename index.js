@@ -1,5 +1,5 @@
 /**
- * Cryptographically strong, hat-compatible, pseudo-random nubmer generator
+ * Cryptographically strong, hat-compatible, pseudo-random number generator
  *
  * @module cryptohat
  */
@@ -72,6 +72,8 @@ if (typeof(process) === "object" && typeof(process.versions) === "object" &&
   //        getting the high quality randomness that would be needed to seed a
   //        CSPRNG.
   random32 = function() {
+    // NOTE: 4294967296 is Math.pow(2, 32). We inline the number to give V8 a
+    //       better chance to implement the multiplication as << 32.
     return Math.random() * 4294967296;
   };
 }
@@ -86,7 +88,9 @@ if (typeof(process) === "object" && typeof(process.versions) === "object" &&
  * @param {number} base the base/radix used to represent the random number;
  *   must be between 2 and 36
  * @returns {string} a randomly generated identifier that meets the constraints
- *   above
+ *   above; the identifiers generated for a given base and number of bits are
+ *   guaranteed to have the same length; in order to satisfy this constraint,
+ *   the returned identifier might have leading zeros
  */
 module.exports = function(bits, base) {
   bits = bits || 128;
@@ -117,7 +121,9 @@ var generatorCache = {};
  *   generator to be returned
  * @returns {function()} a generating function; if a base is provided, the
  *   function returns random identifiers as strings; otherwise, the function
- *   returns random numbers
+ *   returns random numbers; the string identifiers returned by a generator are
+ *   guaranteed to have the same length; in order to satisfy this constraint,
+ *   the returned identifier might have leading zeros
  */
 module.exports.generator = function(bits, base) {
   var cacheKey = (base) ? bits.toString() + "." + base.toString() :
@@ -134,7 +140,7 @@ module.exports.generator = function(bits, base) {
 };
 
 /**
- * Creates a random nubmer generator.
+ * Creates a random number generator.
  *
  * @param {number} bits the desired number of bits of randomness
  * @returns {function()} a generating function that returns random numbers
@@ -261,7 +267,10 @@ module.exports._stringRepeat = stringRepeat;
  * @param {number} bits the desired number of bits of randomness
  * @param {number} base the base/radix used to represent the random number;
  *   must be between 2 and 36
- * @returns {function()} a generating function that returns random identifiers
+ * @returns {function()} a generating function that returns random identifiers;
+ *   the string identifiers returned by the function guaranteed to have the
+ *   same length; in order to satisfy this constraint, the returned identifier
+ *   might have leading zeros
  */
 var newStringGenerator = function(bits, base) {
   if (base < 2 || base > 36)

@@ -1,5 +1,5 @@
-var cryptohat = require("..");
 var _ = require("lodash");
+var cryptohat = require("..");
 
 var testNumberRng = function(generator, bits, count) {
   var numbers = [];
@@ -184,4 +184,3 @@ describe("cryptohat", function() {
     testStringRng(function() { return cryptohat(64, 10); }, 64, 10, 1000);
   });
 });
-

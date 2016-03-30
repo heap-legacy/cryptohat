@@ -1,7 +1,7 @@
 {
   "name": "cryptohat",
   "version": "0.1.0",
-  "description": "Cryptographically strong, hat-compatible, pseudo-random nubmer generator",
+  "description": "Cryptographically strong, hat-compatible, pseudo-random number generator",
   "keywords": ["hat", "crypto", "rng", "random"],
   "homepage": "https://github.com/heap/cryptohat",
   "author": "Victor Costan <victor@costan.us> (http://www.costan.us)",

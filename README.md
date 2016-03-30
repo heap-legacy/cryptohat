@@ -35,13 +35,19 @@ npm install cryptohat@0.1.x --save
 
 ## Usage
 
-`cryptohat` implements the `hat(bits, base)` API. As long as you don't need
-the `hat.rack` method, `cryptohat` can be used as a drop-in replacement.
+`cryptohat` implements the `hat(bits, base)` API. The function takes in the
+desired number of bits of randomness and the
+[base/radix](https://en.wikipedia.org/wiki/Radix) that will be used to
+represent the returned random number, and returns a string. The returned
+strings are guaranteed to have the same length for a given bits/base
+combination. As long as you don't need the `hat.rack` method, `cryptohat` can
+be used as a drop-in replacement.
 
 ```javascript
 var hat = require('cryptohat');
 
 hat();  // '39a00e331acce7516a8ea69b85e191f0'
+hat();  // '00549f7401ac0ba9ea1b791f50bc7b1e'
 hat(53, 10);  // '6738095220277140'
 ```
 
