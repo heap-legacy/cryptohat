@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/heap/cryptohat.svg?branch=master)](https://travis-ci.org/heap/cryptohat)
 [![Coverage Status](https://coveralls.io/repos/github/heap/cryptohat/badge.svg?branch=master)](https://coveralls.io/github/heap/cryptohat?branch=master)
 [![Dependency Status](https://gemnasium.com/heap/cryptohat.svg)](https://gemnasium.com/heap/cryptohat)
-[![NPM Version](http://img.shields.io/npm/v/heap-api.svg)](https://www.npmjs.org/package/heap-api)
+[![NPM Version](http://img.shields.io/npm/v/cryptohat.svg)](https://www.npmjs.org/package/cryptohat)
 
 This is a [node.js](https://nodejs.org/) package that implements
 [hat](https://www.npmjs.com/package/hat)'s main API, but uses a
