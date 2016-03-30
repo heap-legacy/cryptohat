@@ -1,0 +1,45 @@
+{
+  "tags": {
+    "allowUnknownTags": false,
+    "dictionaries": ["jsdoc", "closure"]
+  },
+  "source": {
+    "include": ["./index.js"],
+    "excldude": [],
+    "includePattern": ".+\\.js(doc)?$",
+    "excludePattern": "(^|\\/|\\\\)(_|\\.)"
+  },
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "markdown": {
+    "parser": "gfm",
+    "hardwrap": false,
+    "idInHeadings": true
+  },
+  "templates": {
+    "logoFile": "",
+    "systemName": "cryptohat",
+    "includeDate": false,
+    "navType": "vertical",
+    "theme": "yeti",
+    "inverseNav": false,
+    "outputSourceFiles": false,
+    "outputSourcePath": false,
+    "linenums": true,
+    "syntaxTheme": "default",
+    "sort": true,
+    "methodHeadingReturns": false,
+    "cleverLinks": false,
+    "monospaceLinks": false
+  },
+  "opts": {
+      "template": "./node_modules/ink-docstrap/template",
+      "encoding": "utf8",
+      "destination": "./doc/",
+      "package": "./package.json",
+      "readme": "./README.md",
+      "private": true,
+      "recurse": true
+  }
+}

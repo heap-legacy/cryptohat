@@ -1,0 +1,20 @@
+# Vim.
+*.swp
+
+# OSX
+.DS_Store
+
+# Npm modules.
+/node_modules
+
+# Node output.
+npm-debug.log
+
+# Code coverage output.
+coverage/
+
+# Auto-generated documentation.
+doc/
+
+# Node packaging output.
+heap-*.tgz

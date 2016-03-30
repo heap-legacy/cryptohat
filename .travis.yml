@@ -1,0 +1,29 @@
+sudo: false
+language: node_js
+compiler: clang-3.6
+env:
+  - CXX=clang-3.6
+addons:
+  apt:
+    sources:
+      - llvm-toolchain-precise-3.6
+      - ubuntu-toolchain-r-test
+    packages:
+      - clang-3.6
+      - g++-4.8
+matrix:
+  include:
+    - node_js: "0.10"
+    - node_js: "0.12"
+    - node_js: "4.0"
+    - node_js: "4.1"
+    - node_js: "4.2"
+    - node_js: "4.3"
+    - node_js: "4.4"
+    - node_js: "5"
+    - node_js: "4.4"
+      env:
+        - SKIP_BENCHMARKS: 1
+      script: npm run coveralls
+    - node_js: "4.4"
+      script: npm run doc
