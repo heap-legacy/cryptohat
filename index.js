@@ -23,7 +23,7 @@ var randomBuffer = null;
  * @var {number}
  * @private
  */
-var randomBufferSize = 1024;
+var randomBufferSize = 4096;
 /**
  * The first unused byte in the random data buffer.
  * @var {number}
@@ -237,28 +237,80 @@ module.exports._array32ToString = array32ToString;
 /**
  * Platform-independent implementation of String.prototype.repeat.
  *
- * @param {string} string the string to be repeated
  * @param {number} count the number of times to repeat the string
- * @return {string} "string", repeated "count" times
+ * @return {string} a string consisting of count zero ("0") characters
+ * @private
  */
-var stringRepeat = null;
+var zeroRepeat = null;
 
 if (typeof(String.prototype.repeat) === "function") {
   // Fast path for node.js >= 4 and modern browsers.
-  stringRepeat = function(string, count) {
-    return string.repeat(count);
+  zeroRepeat = function(count) {
+    return "0".repeat(count);
   };
 } else {
   // Slow path for node.js <= 0.12 and old browsers.
-  stringRepeat = function(string, count) {
+  zeroRepeat = function(count) {
     var result = "";
     for (var i = 0; i < count; ++i)
-      result += string;
+      result += "0";
     return result;
   };
 }
 // NOTE: This is exported for testing.
-module.exports._stringRepeat = stringRepeat;
+module.exports._zeroRepeat = zeroRepeat;
+
+/**
+ * Pads a string with zeros until it reaches a desired length.
+ *
+ * @param {string} string the string to be padded
+ * @param {number} the desired string length
+ * @return {string} a string that has at least the desired length; the returned
+ *   string will consist of some zero ("0") characters, followed by the given
+ *   string
+ * @private
+ */
+var zeroPad = function(string, length) {
+  var digitsNeeded = length - string.length;
+  if (digitsNeeded > 0)
+    string = zeroRepeat(digitsNeeded) + string;
+  return string;
+};
+
+// NOTE: This is exported for testing.
+module.exports._zeroPad = zeroPad;
+
+/**
+ * Special case of {@link array32ToString} when base=16.
+ *
+ * @see array32ToString
+ * @param {Array<number>} array a big-endian representation of the number; each
+ *   element in the array is a 32-bit digit; the elements in the array will be
+ *   trashed
+ * @param {number} base the base/radix used to represent the number
+ * @param {Array<string>} digits buffer used to store an intermediate
+ *   representation of the number; the elements in the array will be trashed
+ * @return {string} the textual representation of the number
+ * @private
+ */
+var array32ToHexString = function(array, base, digits) {
+  // NOTE: The digits array will generally be large enough to contain
+  //       everything except for possibly the first few digits in the first
+  //       array element.
+  var string = "";
+  for (var i = 0; i < array.length; ++i) {
+    // NOTE: Each 32-bit character expands to 8 hexadecimal digits.
+    string += zeroPad(array[i].toString(16), 8);
+  }
+
+  var extraCharacters = string.length - digits.length;
+  if (extraCharacters > 0)
+    string = string.substring(extraCharacters);
+  return string;
+};
+// NOTE: This is exported for testing.
+module.exports._array32ToHexString = array32ToHexString;
+
 
 /**
  * Creates a random identifier generator.
@@ -281,12 +333,8 @@ var newStringGenerator = function(bits, base) {
     // Fast path where we can use JavaScript's toString().
     var numberGenerator = module.exports.generator(bits, 0);
     return function() {
-      var identifier = numberGenerator().toString(base);
-      var missingDigits = digitCount - identifier.length;
-      if (missingDigits > 0)
-        identifier = stringRepeat("0", missingDigits) + identifier;
-      return identifier;
-    }
+      return zeroPad(numberGenerator().toString(base), digitCount);
+    };
   }
 
   // NOTE: We pre-allocate the arrays to hint V8 about their size and type.
@@ -297,12 +345,13 @@ var newStringGenerator = function(bits, base) {
   var numbers = [];
   for (var i = 0; i < numberCount; ++i)
     numbers[i] = 0;
+  var stringifer = (base === 16) ? array32ToHexString : array32ToString;
   if (bits % 32 === 0) {
     return function() {
       for (var i = 0; i < numberCount; ++i)
         numbers[i] = random32();
 
-      return array32ToString(numbers, base, digits);
+      return stringifer(numbers, base, digits);
     };
   } else {
     mask = Math.pow(2, bits % 32) - 1;
@@ -311,7 +360,7 @@ var newStringGenerator = function(bits, base) {
       for (var i = 1; i < numberCount; ++i)
         numbers[i] = random32();
 
-      return array32ToString(numbers, base, digits);
+      return stringifer(numbers, base, digits);
     };
   }
 };
