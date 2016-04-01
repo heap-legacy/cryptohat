@@ -56,5 +56,13 @@ describe("benchmarking", function() {
       console.log([baseline / us, "baseline", baseline, "us", us]);
       expect(baseline / us).to.be.at.least(0.2);
     });
+    it("is at most 2x slower than hat for base-16 128-bits", function() {
+      var baseline = benchmark(iterations, function() {
+        return hat(128, 16);
+      });
+      var us = benchmark(iterations, cryptohat.generator(128, 16));
+      console.log([baseline / us, "baseline", baseline, "us", us]);
+      expect(baseline / us).to.be.at.least(0.2);
+    });
   });
 });
