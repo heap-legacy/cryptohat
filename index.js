@@ -1,3 +1,5 @@
+(function(root) {
+
 /**
  * Cryptographically strong, hat-compatible, pseudo-random number generator
  *
@@ -39,45 +41,6 @@ var randomBufferOffset = randomBufferSize;
  */
 var random32 = null;
 
-if (typeof(process) === "object" && typeof(process.versions) === "object" &&
-      typeof(process.versions["node"]) === "string") {
-  // Node.js implementation based on crypto.randomBytes()
-  var crypto = require("crypto");
-  random32 = function() {
-    if (randomBufferOffset === randomBufferSize) {
-      randomBufferOffset = 0;
-      randomBuffer = crypto.randomBytes(randomBufferSize);
-    }
-    var returnValue = randomBuffer.readUInt32LE(randomBufferOffset);
-    randomBufferOffset += 4;
-    return returnValue;
-  };
-} else if (typeof(window.crypto) === "object" &&
-      typeof(window.crypto.getRandomBytes) === "function") {
-  // Modern browser implementation based on window.crypto.getRandomValues()
-  randomBuffer = new Uint32Array(randomBufferSize / 4);
-  random32 = function() {
-    if (randomBufferOffset === randomBufferSize) {
-      randomBufferOffset = 0;
-      window.crypto.getRandomValues(randomBuffer);
-    }
-    var returnValue = randomBuffer.readUInt32LE(randomBufferOffset);
-    randomBufferOffset += 4;
-    return randomBuffer[randomBufferOffset++];
-  };
-} else {
-  // Compatibility implementation for old browsers.
-
-  /// NOTE: we fall back to Math.random() because we have no good way of
-  //        getting the high quality randomness that would be needed to seed a
-  //        CSPRNG.
-  random32 = function() {
-    // NOTE: 4294967296 is Math.pow(2, 32). We inline the number to give V8 a
-    //       better chance to implement the multiplication as << 32.
-    return Math.random() * 4294967296;
-  };
-}
-
 /**
  * Generates a random identifier.
  *
@@ -91,13 +54,77 @@ if (typeof(process) === "object" && typeof(process.versions) === "object" &&
  *   above; the identifiers generated for a given base and number of bits are
  *   guaranteed to have the same length; in order to satisfy this constraint,
  *   the returned identifier might have leading zeros
+ * @alias cryptohat
  */
-module.exports = function(bits, base) {
+var cryptohat = function(bits, base) {
   bits = bits || 128;
   if (!base && base !== 0)
     base = 16;
-  return module.exports.generator(bits, base)();
+  return cryptohat.generator(bits, base)();
 };
+
+if (typeof(module) !== "undefined" && "exports" in module) {
+  // Common.js environment.
+  module.exports = cryptohat;
+} else {
+  // Browser.
+  if (typeof(global) !== "undefined")
+    root = global;
+
+  root.cryptohat = cryptohat;
+}
+
+if (typeof(process) !== "undefined" &&
+    typeof((process.versions || {}).node) === "string") {
+  // Node.js implementation based on crypto.randomBytes()
+  var crypto = require("crypto");
+  random32 = function() {
+    if (randomBufferOffset === randomBufferSize) {
+      randomBufferOffset = 0;
+      randomBuffer = crypto.randomBytes(randomBufferSize);
+    }
+    var returnValue = randomBuffer.readUInt32LE(randomBufferOffset);
+    randomBufferOffset += 4;
+    return returnValue;
+  };
+
+  // NOTE: This is exported for manual testing.
+  cryptohat._engine = "crypto.randomBytes()";
+} else if (typeof(((root || {}).crypto || {}).getRandomValues) ===
+    "function") {
+  // Modern browser implementation based on the W3C Crypto API
+  // NOTE: Using the root object instead of window lets us find the Crypto API
+  //       in Web workers.
+  randomBufferSize /= 4;
+  randomBuffer = new Uint32Array(randomBufferSize);
+  randomBufferOffset = randomBufferSize;
+  random32 = function() {
+    if (randomBufferOffset === randomBufferSize) {
+      randomBufferOffset = 0;
+      root.crypto.getRandomValues(randomBuffer);
+    }
+    var returnValue = randomBuffer[randomBufferOffset];
+    randomBufferOffset += 1;
+    return returnValue;
+  };
+
+  // NOTE: This is exported for manual testing.
+  cryptohat._engine = "window.crypto.getRandomValues()";
+} else {
+  // Compatibility implementation for old browsers.
+
+  /// NOTE: we fall back to Math.random() because we have no good way of
+  //        getting the high quality randomness that would be needed to seed a
+  //        CSPRNG.
+  random32 = function() {
+    // NOTE: 4294967296 is Math.pow(2, 32). We inline the number to give V8 a
+    //       better chance to implement the multiplication as << 32.
+    return Math.floor(Math.random() * 4294967296);
+  };
+
+  // NOTE: This is exported for manual testing.
+  cryptohat._engine = "Math.random()";
+}
 
 /**
  * Cache for the generator functions produced by this module.
@@ -125,7 +152,7 @@ var generatorCache = {};
  *   guaranteed to have the same length; in order to satisfy this constraint,
  *   the returned identifier might have leading zeros
  */
-module.exports.generator = function(bits, base) {
+cryptohat.generator = function(bits, base) {
   var cacheKey = (base) ? bits.toString() + "." + base.toString() :
       bits.toString();
   var generator = generatorCache[cacheKey];
@@ -232,7 +259,7 @@ var array32ToString = function(array, base, digits) {
   return digits.join("");
 };
 // NOTE: This is exported for testing.
-module.exports._array32ToString = array32ToString;
+cryptohat._array32ToString = array32ToString;
 
 /**
  * Platform-independent implementation of String.prototype.repeat.
@@ -258,7 +285,7 @@ if (typeof(String.prototype.repeat) === "function") {
   };
 }
 // NOTE: This is exported for testing.
-module.exports._zeroRepeat = zeroRepeat;
+cryptohat._zeroRepeat = zeroRepeat;
 
 /**
  * Pads a string with zeros until it reaches a desired length.
@@ -278,7 +305,7 @@ var zeroPad = function(string, length) {
 };
 
 // NOTE: This is exported for testing.
-module.exports._zeroPad = zeroPad;
+cryptohat._zeroPad = zeroPad;
 
 /**
  * Special case of {@link array32ToString} when base=16.
@@ -309,7 +336,7 @@ var array32ToHexString = function(array, base, digits) {
   return string;
 };
 // NOTE: This is exported for testing.
-module.exports._array32ToHexString = array32ToHexString;
+cryptohat._array32ToHexString = array32ToHexString;
 
 
 /**
@@ -331,7 +358,7 @@ var newStringGenerator = function(bits, base) {
   var digitCount = maxDigits(bits, base);
   if (bits <= 53) {
     // Fast path where we can use JavaScript's toString().
-    var numberGenerator = module.exports.generator(bits, 0);
+    var numberGenerator = cryptohat.generator(bits, 0);
     return function() {
       return zeroPad(numberGenerator().toString(base), digitCount);
     };
@@ -364,3 +391,5 @@ var newStringGenerator = function(bits, base) {
     };
   }
 };
+
+})(this);

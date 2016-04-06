@@ -8,6 +8,10 @@
 # Git.
 .git
 
+# Bower modules.
+bower.json
+/bower_components
+
 # Npm modules.
 /node_modules
 
@@ -21,4 +25,4 @@ coverage/
 doc/
 
 # Node packaging output.
-heap-*.tgz
+cryptohat-*.tgz

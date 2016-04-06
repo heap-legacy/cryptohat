@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="../bower_components/mocha/mocha.css" />
+
+  <script src="../index.js"></script>
+
+  <script src="../bower_components/chai/chai.js"></script>
+  <script src="../bower_components/mocha/mocha.js"></script>
+  <script src="../bower_components/lodash/lodash.js"></script>
+  <script>
+    mocha.setup({ui: "bdd", timeout: 120000});
+  </script>
+
+  <script>
+    window.module = {}; // This hack is necessary to get hat to load.
+  </script>
+  <script src="../node_modules/hat/index.js"></script>
+  <script>
+    delete window["module"];
+  </script>
+
+  <script src="./helper.js"></script>
+  <script src="./benchmark_test.js"></script>
+  <script src="./caching_test.js"></script>
+  <script src="./randomness_test.js"></script>
+  <script src="./stringifier_test.js"></script>
+  <script>
+    window.addEventListener("load", function() {
+      mocha.run();
+    });
+  </script>
+</head>
+<body>
+  <div id="mocha"></div>
+</body>
+</html>

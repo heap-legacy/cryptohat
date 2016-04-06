@@ -4,6 +4,9 @@
 # OSX
 .DS_Store
 
+# Bower modules.
+/bower_components
+
 # Npm modules.
 /node_modules
 
@@ -17,4 +20,4 @@ coverage/
 doc/
 
 # Node packaging output.
-heap-*.tgz
+cryptohat-*.tgz

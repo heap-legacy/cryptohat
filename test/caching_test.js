@@ -1,5 +1,6 @@
-var cryptohat = require("..");
+(function() {
 
+var cryptohat = __test.cryptohat;
 var generator = cryptohat.generator;
 
 describe("cryptohat.generator", function() {
@@ -28,3 +29,5 @@ describe("cryptohat.generator", function() {
     });
   });
 });
+
+})();

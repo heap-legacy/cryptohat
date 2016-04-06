@@ -19,17 +19,17 @@
   "dependencies": {
   },
   "devDependencies": {
+    "bower": ">= 0",
     "chai": ">= 3.5.0",
     "coveralls": ">= 2.11.8",
     "hat": ">= 0.0.3",
+    "http-server": ">= 0",
     "ink-docstrap": ">= 1.1.4",
     "istanbul": ">= 0.4.2",
     "jsdoc": ">= 3.4.0",
     "lodash": ">= 4.6.1",
     "mocha": ">= 2.4.5",
     "mocha-lcov-reporter": ">= 1.2.0",
-    "sinon": ">= 1.17.3",
-    "sinon-chai": ">= 2.8.0",
     "watch": ">= 0.16.0"
   },
   "main": "index.js",
