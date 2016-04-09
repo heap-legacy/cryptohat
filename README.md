@@ -20,16 +20,23 @@ CSPRNG.
 
 ## Prerequisites
 
-This package is tested on node.js 0.10 and above. Browser support is planned
-for a future version.
+This package should work on any reasonably modern browser or node.js version.
+
+Every commit is tested using [continuous integration](https://travis-ci.org/)
+on node.js 0.10 and above. Releases are also tested against the most recent
+versions of [Chrome](https://www.google.com/chrome/),
+[Firefox](https://www.mozilla.org/firefox/),
+[Safari](http://www.apple.com/safari/), and
+[Internet Explorer](http://windows.microsoft.com/internet-explorer/).
 
 
 ## Installation
 
-Install using [npm](https://www.npmjs.com/).
+Install using [npm](https://www.npmjs.com/) or [bower](http://bower.io/).
 
 ```bash
-npm install cryptohat@0.1.x --save
+npm install cryptohat@1.x --save
+bower install cryptohat@1.x --save
 ```
 
 
@@ -84,6 +91,7 @@ After cloning the repository, install the dependencies.
 
 ```bash
 npm install
+node node_modules/.bin/bower install
 ```
 
 Make sure the tests pass after making a change.
@@ -106,6 +114,24 @@ reasonable.
 ```bash
 npm run doc
 ```
+
+When modifying code around or inside feature detection blocks (combinations of
+`if` and `typeof`), make sure the tests pass at least in Chrome and Firefox, by
+opening [test/index.html](./test/index.html) in the browsers.
+
+```bash
+open test/index.html  # On OSX.
+xdg-open test/index.html  # On Linux.
+```
+
+When testing against a browser in a VM (e.g., for Internet Explorer), spawn a
+local Web server inside the source tree and visit it inside the VM
+(e.g., `http://10.0.2.2:8080/test/index.html`).
+
+```bash
+node node_modules/.bin/http-server
+```
+
 
 If you submit a
 [pull request](https://help.github.com/articles/using-pull-requests/),

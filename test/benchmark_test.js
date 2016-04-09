@@ -1,16 +1,35 @@
-var cryptohat = require("..");
-var hat = require("hat");
+(function() {
+
+var cryptohat = __test.cryptohat;
+var hat = __test.hat;
 
 // Runs the target function for a number of iterations and returns the number
 // of nanoseconds passed per iteration.
-var benchmark = function (iterations, code) {
-  var t0 = process.hrtime();
-  for (var i = 0; i < iterations; ++i) {
-    code();
-  }
-  t1 = process.hrtime();
+var benchmark = null;
 
-  return ((t1[0] - t0[0]) * 1e9 + t1[1] - t1[0]) / iterations;
+if (typeof(process) !== "undefined" && typeof(process.hrtime) === "function") {
+  // Node.js implementation based on process.hrtime()
+  benchmark = function(iterations, code) {
+    var t0 = process.hrtime();
+    for (var i = 0; i < iterations; ++i) {
+      code();
+    }
+    t1 = process.hrtime();
+
+    return ((t1[0] - t0[0]) * 1e9 + t1[1] - t1[0]) / iterations;
+  }
+} else if(typeof(performance) !== "undefined" &&
+    typeof(performance.now) === "function") {
+  // Browser implementation based on performance.now()
+  benchmark = function(iterations, code) {
+    var t0 = performance.now();
+    for (var i = 0; i < iterations; ++i) {
+      code();
+    }
+    t1 = performance.now();
+
+    return Math.ceil((t1 - t0) * 1e6);
+  }
 }
 
 var iterations = 4000000;
@@ -66,3 +85,5 @@ describe("benchmarking", function() {
     });
   });
 });
+
+})();

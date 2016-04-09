@@ -1,4 +1,6 @@
-var cryptohat = require("..");
+(function() {
+
+var cryptohat = __test.cryptohat;
 
 var array32ToString = cryptohat._array32ToString;
 var array32ToHexString = cryptohat._array32ToHexString;
@@ -150,3 +152,5 @@ describe("cryptohat._array32ToHexString", function() {
         new Array(24))).to.equal("ffffffff00000000ffffffff");
   });
 });
+
+})();

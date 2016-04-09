@@ -1,0 +1,32 @@
+{
+  "name": "cryptohat",
+  "description": "Cryptographically strong, hat-compatible, pseudo-random number generator",
+  "keywords": ["hat", "crypto", "rng", "random"],
+  "main": "index.js",
+  "homepage": "https://github.com/heap/cryptohat",
+  "authors": [
+    "Victor Costan <victor@costan.us> (http://www.costan.us)"
+  ],
+  "license": "MIT",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "chai": ">= 3.5.0",
+    "lodash": ">= 4.8.2",
+    "mocha": ">= 2.4.5"
+  },
+  "moduleType": [
+    "node",
+    "globals"
+  ],
+  "ignore": [
+    "**/*.swp",
+    "**/.DS_Store",
+    "bower_components",
+    "node_modules",
+    "npm-debug.log",
+    "coverage",
+    "doc",
+    "heap-*.tgz"
+  ]
+}
