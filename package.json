@@ -1,6 +1,6 @@
 {
   "name": "cryptohat",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Cryptographically strong, hat-compatible, pseudo-random number generator",
   "keywords": ["hat", "crypto", "rng", "random"],
   "homepage": "https://github.com/heap/cryptohat",
